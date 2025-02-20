@@ -17,4 +17,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-![chrome_02cjhqlbv2](https://github.com/user-attachments/assets/810b8c62-2d1b-4135-8950-b7793d45a310)
+Page preview:
+![chrome_E4RwAevCLP](https://github.com/user-attachments/assets/2f53609f-0377-4cd9-acaa-8f914db8283f)
+
