@@ -1,22 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { Edit2, Share2, HelpCircle, Maximize2, RefreshCw } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line } from "recharts"
+import { Card } from "@/components/ui/card"
+import { Edit, Share, Maximize2, Trash2, RefreshCw, MessageCircle, X } from "lucide-react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { LineChart, BarChart } from "@/components/ui/charts"
 
-const timeSeriesData = Array.from({ length: 50 }, (_, i) => ({
-  date: `${i + 1}`,
-  value: Math.floor(Math.random() * 15000) + 5000,
+const lineData = Array.from({ length: 50 }, (_, i) => ({
+  date: `2023-${Math.floor(i / 30) + 7}-${(i % 30) + 1}`,
+  count: Math.floor(Math.random() * 15000) + 5000,
 }))
 
-const profitData = [
-  { segment: "Channel Partners", year2013: 1000, year2014: 2000 },
-  { segment: "Enterprise", year2013: 2000, year2014: 8000 },
-  { segment: "Government", year2013: 3000, year2014: 1000 },
-  { segment: "Midmarket", year2013: 4000, year2014: 3000 },
-  { segment: "Small Business", year2013: 1500, year2014: 4000 },
+const barData = [
+  { segment: "Channel Partners", "2013": 1000, "2014": 2000 },
+  { segment: "Enterprise", "2013": 2000, "2014": 8000 },
+  { segment: "Government", "2013": 6000, "2014": 1000 },
+  { segment: "Midmarket", "2013": 1500, "2014": 3500 },
+  { segment: "Small Business", "2013": 1000, "2014": 4000 },
 ]
 
 const tableData = [
@@ -24,86 +25,56 @@ const tableData = [
     segment: "Government",
     country: "Canada",
     product: "Carretera",
-    discount: "Medium",
-    units: "1618.5",
-    manufacturing: "3",
-    sale: "20",
-    gross: "32370.0",
+    discountBand: "Medium",
+    unitsSold: "1618.5",
+    manufacturingPrice: "3",
+    salePrice: "20",
+    grossSales: "32370.0",
   },
-  {
-    segment: "Government",
-    country: "Germany",
-    product: "Carretera",
-    discount: "Medium",
-    units: "1321.9",
-    manufacturing: "3",
-    sale: "20",
-    gross: "26420.0",
-  },
-  {
-    segment: "Midmarket",
-    country: "France",
-    product: "Carretera",
-    discount: "Medium",
-    units: "2178.0",
-    manufacturing: "3",
-    sale: "15",
-    gross: "32670.0",
-  },
+  // Add more rows as needed
 ]
 
-export default function Page() {
-  const [selectedOrientation, setSelectedOrientation] = useState("portrait")
-  const [selectedSize, setSelectedSize] = useState("letter")
-  const [selectedColor, setSelectedColor] = useState("color")
-  const [selectedMargins, setSelectedMargins] = useState("default")
-  const [selectedPages, setSelectedPages] = useState("1")
+export default function DashboardPage() {
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [isBlackAndWhite, setIsBlackAndWhite] = useState(false)
+
+  const getChartColors = (index: number) => {
+    if (isBlackAndWhite) {
+      const shade = 255 - index * 50
+      return `rgb(${shade}, ${shade}, ${shade})`
+    }
+    return index === 0 ? "#f15a24" : "#bcdee9"
+  }
 
   return (
-    <div className="min-h-screen bg-[#ebecee]">
-      {/* Header */}
-      <header className="bg-white border-b border-[#d9d9d9] p-4">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#f15a24] rounded-lg" />
-            <h1 className="text-2xl font-semibold text-[#2c2626]">Hi, Claire!</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" className="text-[#f15a24]">
-              <Edit2 className="w-5 h-5 mr-2" />
-              Edit
-            </Button>
-            <Button variant="ghost" className="text-[#f15a24]">
-              <Share2 className="w-5 h-5 mr-2" />
-              Share
-            </Button>
-          </div>
+    <div className="min-h-screen bg-[#ebecee] relative">
+      <header className="flex flex-col sm:flex-row items-center justify-between p-4 bg-white border-b">
+        <div className="flex items-center gap-2 mb-2 sm:mb-0">
+          <div className="w-10 h-10 bg-[#f15a24] rounded-lg" />
+          <h1 className="text-2xl font-semibold text-[#2c2626]">Hi, Claire!</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" className="text-[#f15a24]">
+            <Edit className="w-5 h-5 mr-2" />
+            Edit
+          </Button>
+          <Button variant="ghost" className="text-[#f15a24]">
+            <Share className="w-5 h-5 mr-2" />
+            Share
+          </Button>
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="max-w-[1400px] mx-auto grid grid-cols-[300px_1fr_300px] gap-6 p-6">
-        {/* Left Sidebar */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Let Querri help you refine your visualizations</h2>
-          <div className="flex items-center gap-2 p-4 border rounded-lg bg-gray-50">
-            <input
-              type="text"
-              placeholder="Ask a question..."
-              className="flex-1 bg-transparent border-none outline-none"
-            />
-            <HelpCircle className="w-5 h-5 text-gray-400" />
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="space-y-6">
-          {/* Time Series Chart */}
-          <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 p-4">
+        <div className="flex-1 space-y-4">
+          <Card className="p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-medium">Draw-Step-Count-Graph</h3>
               <div className="flex gap-2">
                 <Button variant="ghost" size="icon">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
                   <RefreshCw className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="icon">
@@ -111,24 +82,19 @@ export default function Page() {
                 </Button>
               </div>
             </div>
-            <div className="h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={timeSeriesData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Line type="monotone" dataKey="value" stroke="#f15a24" dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
+            <div className="h-[300px] w-full">
+              <LineChart data={lineData} isBlackAndWhite={isBlackAndWhite} getChartColors={getChartColors} />
             </div>
-          </div>
+          </Card>
 
-          {/* Bar Chart */}
-          <div className="bg-white p-6 rounded-lg shadow-sm">
+          <Card className="p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-medium">Interactive Profit by Segment and Year Chart</h3>
               <div className="flex gap-2">
                 <Button variant="ghost" size="icon">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
                   <RefreshCw className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="icon">
@@ -136,124 +102,122 @@ export default function Page() {
                 </Button>
               </div>
             </div>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={profitData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="segment" />
-                  <YAxis />
-                  <Bar dataKey="year2013" fill="#f15a24" />
-                  <Bar dataKey="year2014" fill="#bcdee9" />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="h-[300px] w-full">
+              <BarChart data={barData} isBlackAndWhite={isBlackAndWhite} getChartColors={getChartColors} />
             </div>
-          </div>
+          </Card>
 
-          {/* Table */}
-          <div className="bg-white p-6 rounded-lg shadow-sm overflow-x-auto">
-            <table className="min-w-full">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Segment</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Country</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Product</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Discount</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Units</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Manufacturing</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Sale</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Gross</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((row, i) => (
-                  <tr key={i} className="border-t">
-                    <td className="px-4 py-2 text-sm">{row.segment}</td>
-                    <td className="px-4 py-2 text-sm">{row.country}</td>
-                    <td className="px-4 py-2 text-sm">{row.product}</td>
-                    <td className="px-4 py-2 text-sm">{row.discount}</td>
-                    <td className="px-4 py-2 text-sm">{row.units}</td>
-                    <td className="px-4 py-2 text-sm">{row.manufacturing}</td>
-                    <td className="px-4 py-2 text-sm">{row.sale}</td>
-                    <td className="px-4 py-2 text-sm">{row.gross}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Card className="p-4">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Segment</TableHead>
+                    <TableHead>Country</TableHead>
+                    <TableHead>Product</TableHead>
+                    <TableHead>Discount Band</TableHead>
+                    <TableHead>Units Sold</TableHead>
+                    <TableHead>Manufacturing Price</TableHead>
+                    <TableHead>Sale Price</TableHead>
+                    <TableHead>Gross Sales</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {tableData.map((row, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{row.segment}</TableCell>
+                      <TableCell>{row.country}</TableCell>
+                      <TableCell>{row.product}</TableCell>
+                      <TableCell>{row.discountBand}</TableCell>
+                      <TableCell>{row.unitsSold}</TableCell>
+                      <TableCell>{row.manufacturingPrice}</TableCell>
+                      <TableCell>{row.salePrice}</TableCell>
+                      <TableCell>{row.grossSales}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
         </div>
 
-        {/* Right Sidebar */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-lg font-semibold mb-6">Print Toolbox</h2>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Orientation</label>
-              <Select value={selectedOrientation} onValueChange={setSelectedOrientation}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="portrait">Portrait</SelectItem>
-                  <SelectItem value="landscape">Landscape</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Size</label>
-              <Select value={selectedSize} onValueChange={setSelectedSize}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="letter">Letter (8.5&#34; x 11&#34;)</SelectItem>
-                  <SelectItem value="a4">A4</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Color</label>
-              <Select value={selectedColor} onValueChange={setSelectedColor}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="color">Color</SelectItem>
-                  <SelectItem value="bw">Black & White</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Margins</label>
-              <Select value={selectedMargins} onValueChange={setSelectedMargins}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Default</SelectItem>
-                  <SelectItem value="narrow">Narrow</SelectItem>
-                  <SelectItem value="wide">Wide</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Pages per Sheet</label>
-              <Select value={selectedPages} onValueChange={setSelectedPages}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="4">4</SelectItem>
-                </SelectContent>
-              </Select>
+        <Card className="md:w-64 md:sticky md:top-4 md:self-start">
+          <div className="p-4">
+            <h2 className="text-lg font-semibold mb-4">Print Toolbox</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Orientation</label>
+                <select className="w-full p-2 border rounded-md">
+                  <option>Portrait</option>
+                  <option>Landscape</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Size</label>
+                <select className="w-full p-2 border rounded-md">
+                  <option>Letter (8.5" x 11")</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Color</label>
+                <select
+                  className="w-full p-2 border rounded-md"
+                  onChange={(e) => setIsBlackAndWhite(e.target.value === "Black & White")}
+                >
+                  <option>Color</option>
+                  <option>Black & White</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Margins</label>
+                <select className="w-full p-2 border rounded-md">
+                  <option>Default</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Pages per Sheet</label>
+                <select className="w-full p-2 border rounded-md">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>4</option>
+                </select>
+              </div>
+              <Button className="w-full bg-[#f8931d] hover:bg-[#f15a24]">Finished</Button>
             </div>
           </div>
-        </div>
+        </Card>
+      </div>
+
+      {/* Querri Chat Button */}
+      <Button
+        className="fixed bottom-4 right-4 rounded-full p-3 bg-[#f15a24] hover:bg-[#f8931d] text-white"
+        onClick={() => setIsChatOpen(true)}
+      >
+        <MessageCircle className="w-6 h-6" />
+      </Button>
+
+      {/* Querri Chat Box */}
+      <div
+        className={`fixed bottom-4 right-4 w-80 bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out ${
+          isChatOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+        }`}
+      >
+        <Card className="p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Let Querri help you</h2>
+            <Button variant="ghost" size="sm" onClick={() => setIsChatOpen(false)}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+            <div className="w-8 h-8 bg-[#f8931d] rounded-full" />
+            <input
+              type="text"
+              placeholder="Ask a question..."
+              className="flex-1 bg-transparent border-none focus:outline-none"
+            />
+          </div>
+        </Card>
       </div>
     </div>
   )
