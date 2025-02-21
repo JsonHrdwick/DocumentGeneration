@@ -18,7 +18,7 @@ interface ChartProps {
 
 export function LineChart({ data, isBlackAndWhite, getChartColors }: ChartProps) {
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%"> 
       <RechartsLineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke={isBlackAndWhite ? "#666" : "#ccc"} />
         <XAxis dataKey="date" stroke={isBlackAndWhite ? "#666" : "#888888"} />
