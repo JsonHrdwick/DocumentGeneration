@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Edit, Share, Maximize2, Trash2, RefreshCw, MessageCircle, X } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, Tooltip } from "recharts"
+import { LineChart, BarChart } from "@/components/ui/charts"
 
 const lineData = Array.from({ length: 50 }, (_, i) => ({
   date: `2023-${Math.floor(i / 30) + 7}-${(i % 30) + 1}`,
@@ -36,6 +36,15 @@ const tableData = [
 
 export default function DashboardPage() {
   const [isChatOpen, setIsChatOpen] = useState(false)
+  const [isBlackAndWhite, setIsBlackAndWhite] = useState(false)
+
+  const getChartColors = (index: number) => {
+    if (isBlackAndWhite) {
+      const shade = 255 - index * 50
+      return `rgb(${shade}, ${shade}, ${shade})`
+    }
+    return index === 0 ? "#f15a24" : "#bcdee9"
+  }
 
   return (
     <div className="min-h-screen bg-[#ebecee] relative">
@@ -74,15 +83,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={lineData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="count" stroke="#f15a24" dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
+              <LineChart data={lineData} isBlackAndWhite={isBlackAndWhite} getChartColors={getChartColors} />
             </div>
           </Card>
 
@@ -102,16 +103,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="segment" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="2013" fill="#f15a24" />
-                  <Bar dataKey="2014" fill="#bcdee9" />
-                </BarChart>
-              </ResponsiveContainer>
+              <BarChart data={barData} isBlackAndWhite={isBlackAndWhite} getChartColors={getChartColors} />
             </div>
           </Card>
 
@@ -168,7 +160,10 @@ export default function DashboardPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Color</label>
-                <select className="w-full p-2 border rounded-md">
+                <select
+                  className="w-full p-2 border rounded-md"
+                  onChange={(e) => setIsBlackAndWhite(e.target.value === "Black & White")}
+                >
                   <option>Color</option>
                   <option>Black & White</option>
                 </select>
@@ -227,4 +222,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
 
