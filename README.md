@@ -22,9 +22,9 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## Update 1
 You may need to run:
--``npx shadcn@latest add card``
--``npx shadcn@latest add button``
--and/or ``npx shadcn@latest add table``
+- ``npx shadcn@latest add card``
+- ``npx shadcn@latest add button``
+- and/or ``npx shadcn@latest add table``
 <img width="946" alt="image" src="https://github.com/user-attachments/assets/dc8ed6b0-2ec0-437d-9ba1-91d593d45863" />
 
 
